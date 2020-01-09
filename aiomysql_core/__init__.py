@@ -1,11 +1,27 @@
 
-__all__ = ('AioMysqlCore')
+__all__ = ('AioMysqlCore', 'Util')
 
 
 class AioMysqlCore(object):
 
     def __init__(self, pool):
         self.pool = pool
+
+    async def gener(self, query, *args, **kwargs):
+        """Execute a query
+        :param str query: Query to execute.
+        :param args: parameters used with query. (optional)
+        :type args: tuple, list or dict
+        :return: An generator for the number of affected rows
+        :rtype: list
+        If args is a list or tuple, %s can be used as a placeholder in the query.
+        If args is a dict, %(name)s can be used as a placeholder in the query.
+        """
+        async with self.pool.acquire() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(query, *args, **kwargs)
+                column_names = [d[0] for d in cur.description]
+                return Util.async_generator([Row(zip(column_names, row)) for row in cur._rows])
 
     async def query(self, query, *args, **kwargs):
         """Execute a query
@@ -17,7 +33,6 @@ class AioMysqlCore(object):
         If args is a list or tuple, %s can be used as a placeholder in the query.
         If args is a dict, %(name)s can be used as a placeholder in the query.
         """
-        """Returns a row list for the given query and parameters."""
         async with self.pool.acquire() as conn:
             async with conn.cursor() as cur:
                 await cur.execute(query, *args, **kwargs)
@@ -134,3 +149,15 @@ class Row(dict):
             return self[name]
         except KeyError:
             raise AttributeError(name)
+
+
+class Util(object):
+
+    @classmethod
+    async def async_generator(cls, rows):
+        """
+        :param rows: list
+        :return: An generator for the rows.
+        """
+        for row in rows:
+            yield row
