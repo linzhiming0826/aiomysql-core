@@ -1,15 +1,19 @@
 
 
 
-## aiomysql-core
+## Aiomysql-Core
 
 ### Simple framework for aiomysql
 
-# introduce
+## Introduce
 
 simple package, easy to use
 
 [aiomysql](https://github.com/aio-libs/aiomysql)
+
+## Document
+
+[click me](https://aiomysql-core.readthedocs.io)
 
 ## Installation
 ```linux
