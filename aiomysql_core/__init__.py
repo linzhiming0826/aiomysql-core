@@ -21,7 +21,7 @@ class AioMysqlCore(object):
             async with conn.cursor() as cur:
                 await cur.execute(query, *args, **kwargs)
                 column_names = [d[0] for d in cur.description]
-                return Util.async_generator([Row(zip(column_names, row)) for row in cur._rows])
+                return Util.async_generator(column_names, cur._rows)
 
     async def query(self, query, *args, **kwargs):
         """Execute a query
@@ -154,10 +154,11 @@ class Row(dict):
 class Util(object):
 
     @classmethod
-    async def async_generator(cls, rows):
+    async def async_generator(cls, column_names, rows):
         """
+        :params column_names: list
         :param rows: list
         :return: An generator for the rows.
         """
         for row in rows:
-            yield row
+            yield Row(zip(column_names, row))
