@@ -6,7 +6,8 @@ from setuptools import setup, find_packages
 
 
 requirements = [
-    'aiomysql>=0.0.20'
+    'aiomysql>=0.0.20',
+    'SQLAlchemy>=1.3.0'
 ]
 
 with open("README.md", "r") as fh:
