@@ -168,20 +168,20 @@ class AioMysqlAlchemyCore(object):
     def __init__(self, engine):
         self.engine = engine
 
-    async def query(self, query):
-        """Execute a query
-        :param TableClause query: Query to execute.
+    async def query(self, clause):
+        """Execute a clause
+        :param TableClause clause: Query to execute.
         :return: Number of affected rows
         """
         async with self.engine.acquire() as conn:
-            return await conn.execute(query)
+            return await conn.execute(clause)
 
-    async def get(self, query):
-        """Execute a query
-        :param TableClause query: Query to execute.
+    async def get(self, clause):
+        """Execute a clause
+        :param TableClause clause: Query to execute.
         :return: Number of affected first row
         """
-        rows = await self.query(query)
+        rows = await self.query(clause)
         if not rows:
             return None
         elif rows.rowcount > 1:
@@ -190,28 +190,28 @@ class AioMysqlAlchemyCore(object):
             async for row in rows:
                 return row
 
-    async def execute(self, query):
-        """Execute a query
-        :param TableClause query: Query to execute.
+    async def execute(self, clause):
+        """Execute a clause
+        :param TableClause clause: Query to execute.
         :return: lastrowid
         """
-        return await self.execute_rowcount(query)
+        return await self.execute_rowcount(clause)
 
-    async def execute_lastrowid(self, query):
-        """Execute a query
-        :param TableClause query: Query to execute.
+    async def execute_lastrowid(self, clause):
+        """Execute a clause
+        :param TableClause clause: Query to execute.
         :type args: tuple, list or dict
         :return: lastrowid
         """
         async with self.engine.acquire() as conn:
-            r = await conn.execute(query)
+            r = await conn.execute(clause)
             return r.lastrowid
 
-    async def execute_rowcount(self, query):
-        """Execute a query
-        :param TableClause query: Query to execute.
+    async def execute_rowcount(self, clause):
+        """Execute a clause
+        :param TableClause clause: Query to execute.
         :return: rowcount
         """
         async with self.engine.acquire() as conn:
-            r = await conn.execute(query)
+            r = await conn.execute(clause)
             return r.rowcount

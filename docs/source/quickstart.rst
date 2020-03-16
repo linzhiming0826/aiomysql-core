@@ -286,25 +286,25 @@ looks like this: ::
         core = AioMysqlAlchemyCore(engine=engine)
         # insert
         doc = {'content': 'insert'}
-        query = Test.insert().values(**doc)
-        rowcount = await core.execute_rowcount(query)
+        clause = Test.insert().values(**doc)
+        rowcount = await core.execute_rowcount(clause)
         print(rowcount)
         # search
-        query = Test.select().where(Test.c.id == 1).limit(1)
-        row = await core.get(query)
+        clause = Test.select().where(Test.c.id == 1).limit(1)
+        row = await core.get(clause)
         print(row.id, row.content)
-        query = Test.select().where(Test.c.id > 1)
-        rows = await core.query(query)
+        clause = Test.select().where(Test.c.id > 1)
+        rows = await core.query(clause)
         async for row in rows:
             print(row.id, row.content)
         # update
         doc = {'content': 'update'}
-        query = Test.update().values(**doc).where(Test.c.id == 1)
-        rowcount = await core.execute_rowcount(query)
+        clause = Test.update().values(**doc).where(Test.c.id == 1)
+        rowcount = await core.execute_rowcount(clause)
         print(rowcount)
         # delete
-        query = Test.delete().where(Test.c.id == 1)
-        rowcount = await core.execute_rowcount(query)
+        clause = Test.delete().where(Test.c.id == 1)
+        rowcount = await core.execute_rowcount(clause)
         print(rowcount)
         await engine.wait_closed()
 
