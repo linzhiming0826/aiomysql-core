@@ -168,20 +168,20 @@ class AioMysqlAlchemyCore(object):
     def __init__(self, engine):
         self.engine = engine
 
-    async def query(self, clause):
+    async def query(self, clause, **params):
         """Execute a clause
         :param TableClause clause: Query to execute.
         :return: Number of affected rows
         """
         async with self.engine.acquire() as conn:
-            return await conn.execute(clause)
+            return await conn.execute(clause, **params)
 
-    async def get(self, clause):
+    async def get(self, clause, **params):
         """Execute a clause
         :param TableClause clause: Query to execute.
         :return: Number of affected first row
         """
-        rows = await self.query(clause)
+        rows = await self.query(clause, **params)
         if not rows:
             return None
         elif rows.rowcount > 1:
@@ -190,28 +190,28 @@ class AioMysqlAlchemyCore(object):
             async for row in rows:
                 return row
 
-    async def execute(self, clause):
+    async def execute(self, clause, **params):
         """Execute a clause
         :param TableClause clause: Query to execute.
         :return: lastrowid
         """
-        return await self.execute_rowcount(clause)
+        return await self.execute_rowcount(clause, **params)
 
-    async def execute_lastrowid(self, clause):
+    async def execute_lastrowid(self, clause, **params):
         """Execute a clause
         :param TableClause clause: Query to execute.
         :type args: tuple, list or dict
         :return: lastrowid
         """
         async with self.engine.acquire() as conn:
-            r = await conn.execute(clause)
+            r = await conn.execute(clause, **params)
             return r.lastrowid
 
-    async def execute_rowcount(self, clause):
+    async def execute_rowcount(self, clause, **params):
         """Execute a clause
         :param TableClause clause: Query to execute.
         :return: rowcount
         """
         async with self.engine.acquire() as conn:
-            r = await conn.execute(clause)
+            r = await conn.execute(clause, **params)
             return r.rowcount
