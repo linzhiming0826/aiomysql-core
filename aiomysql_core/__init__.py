@@ -62,12 +62,12 @@ class AioMysqlCore(object):
         :param str query: Query to execute.
         :param args: parameters used with query. (optional)
         :type args: tuple, list or dict
-        :return: lastrowid
+        :return: rowcount
         :rtype: int
         If args is a list or tuple, %s can be used as a placeholder in the query.
         If args is a dict, %(name)s can be used as a placeholder in the query.
         """
-        return await self.execute_lastrowid(query, *args, **kwargs)
+        return await self.execute_rowcount(query, *args, **kwargs)
 
     async def execute_lastrowid(self, query, *args, **kwargs):
         """Execute a query
@@ -103,12 +103,12 @@ class AioMysqlCore(object):
         """Run several data against one query
         :param query: query to execute on server
         :param args:  Sequence of sequences or mappings.  It is used as parameter.
-        :return: lastrowid.
+        :return: rowcount.
         This method improves performance on multiple-row INSERT and
         REPLACE. Otherwise it is equivalent to looping over args with
         execute().
         """
-        return await self.executemany_lastrowid(query, parameters)
+        return await self.executemany_rowcount(query, parameters)
 
     async def executemany_lastrowid(self, query, parameters):
         """Run several data against one query
